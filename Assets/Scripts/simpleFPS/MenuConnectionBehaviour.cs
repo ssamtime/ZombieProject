@@ -232,7 +232,20 @@ public class MenuConnection : IFusionMenuConnection
 
         public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
         public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
-        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        {
+            GameObject.Find("GamePlay").GetComponent<GamePlay>().SpawnPlayer(runner.LocalPlayer);
+            if (runner.IsServer)
+            {
+                // 서버에서 플레이어 스폰
+                GameObject.Find("GamePlay").GetComponent<GamePlay>().SpawnPlayer(runner.LocalPlayer);                
+            }
+            else
+            {
+                // 클라이언트에서 서버로 플레이어 스폰 요청
+                RequestSpawnPlayer(runner.LocalPlayer);
+            }
+        }
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
@@ -282,6 +295,14 @@ public class MenuConnection : IFusionMenuConnection
         public void OnSceneLoadStart(NetworkRunner runner) { }
         public void OnSceneLoadDone(NetworkRunner runner) { }
 
-        
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        public void RequestSpawnPlayer(PlayerRef playerRef)
+        {
+            if (_runner.IsServer)
+            {
+                GameObject.Find("GamePlay").GetComponent<GamePlay>().SpawnPlayer(playerRef);
+
+            }
+        }
     }
 }

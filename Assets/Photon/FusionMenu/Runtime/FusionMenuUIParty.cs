@@ -119,11 +119,14 @@ namespace Fusion.Menu {
     protected virtual async Task ConnectAsync(bool creating) {
       // Test for input errors before switching screen
       var inputRegionCode = _sessionCodeField.text.ToUpper();
+
+      // 세션코드 유효한지 확인
       if (creating == false && Config.CodeGenerator.IsValid(inputRegionCode) == false) {
         await Controller.PopupAsync($"The session code '{inputRegionCode}' is not a valid session code. Please enter {Config.CodeGenerator.Length} characters or digits.", "Invalid Session Code");
         return;
       }
-
+      
+      // 지역 요청이 완료되지 않았으면 지역요청기다리기
       if (_regionRequest.IsCompleted == false) {
         // Goto loading screen
         Controller.Show<FusionMenuUILoading>();
@@ -137,45 +140,57 @@ namespace Fusion.Menu {
           // Error is handled in next section
         }
       }
-
+      
+      // 지역 요청이 성공적으로 완료되지 않았거나, 결과가 없으면 오류 팝업을 표시하고 종료
+      
       if (_regionRequest.IsCompletedSuccessfully == false && _regionRequest.Result.Count == 0) {
         await Controller.PopupAsync($"Failed to request regions.", "Connection Failed");
         Controller.Show<FusionMenuUIMain>();
         return;
       }
-
-      if (creating) {
+      
+      // 세션 생성
+      if (creating)
+      { 
         var regionIndex = -1;
         if (string.IsNullOrEmpty(ConnectionArgs.PreferredRegion)) {
           // Select a best region now
           regionIndex = FindBestAvailableOnlineRegionIndex(_regionRequest.Result);
-        } else {
+        } 
+        else {
           regionIndex = _regionRequest.Result.FindIndex(r => r.Code == ConnectionArgs.PreferredRegion);
         }
 
-        if (regionIndex == -1) {
+        if (regionIndex == -1)
+        {
           await Controller.PopupAsync($"Selected region is not available.", "Connection Failed");
           Controller.Show<FusionMenuUIMain>();
           return;
         }
-
+        
+        // 세션코드 생성
         ConnectionArgs.Session = Config.CodeGenerator.EncodeRegion(Config.CodeGenerator.Create(), regionIndex);
         ConnectionArgs.Region = _regionRequest.Result[regionIndex].Code;
-      } else {
+      } 
+      // 세션 참가
+      else 
+      {
+        //세션 참가 모드일 때, 입력된 세션 코드를 디코딩하여 유효한 지역 인덱스인지 확인
         var regionIndex = Config.CodeGenerator.DecodeRegion(inputRegionCode);
+        //지역 인덱스가 유효하지 않으면 오류 팝업을 표시하고 종료
         if (regionIndex < 0 || regionIndex > Config.AvailableRegions.Count) {
           await Controller.PopupAsync($"The session code '{inputRegionCode}' is not a valid session code (cannot decode the region).", "Invalid Session Code");
           return;
         }
-
+       //세션 코드, 지역코드 설정
         ConnectionArgs.Session = _sessionCodeField.text.ToUpper(); ;
         ConnectionArgs.Region = Config.AvailableRegions[regionIndex];
       }
 
       ConnectionArgs.Creating = creating;
 
-      Controller.Show<FusionMenuUILoading>();
-
+      Controller.Show<FusionMenuUILoading>();        
+      //비동기적으로 연결 시도
       var result = await Connection.ConnectAsync(ConnectionArgs);
 
       await FusionMenuUIMain.HandleConnectionResult(result, this.Controller);

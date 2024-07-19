@@ -1134,7 +1134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da29f9866aa6c5a4d949c30318245462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 7344550496624820699, guid: f191f906ee3c34d46970aae0d91a5222, type: 3}
+  PlayerPrefab: {fileID: 919183576983067002, guid: f191f906ee3c34d46970aae0d91a5222, type: 3}
   _PlayerData:
     _items: []
 --- !u!4 &1732289950
@@ -1323,13 +1323,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2848542569537058279, guid: 6f58119b365af9b438c0c6790160a62d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2056569333}
   m_SourcePrefab: {fileID: 100100000, guid: 6f58119b365af9b438c0c6790160a62d, type: 3}
 --- !u!1 &2056569332 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2848542569537058279, guid: 6f58119b365af9b438c0c6790160a62d, type: 3}
   m_PrefabInstance: {fileID: 2056569331}
   m_PrefabAsset: {fileID: 0}
+--- !u!225 &2056569333
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056569332}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ public struct PlayerData : INetworkStruct
 public class GamePlay : NetworkBehaviour
 {
 
-    public GameObject PlayerPrefab; // Player PlayerPrefab 이었음
+    public NetworkObject PlayerPrefab; // Player PlayerPrefab 이었음
     [Networked][Capacity(32)][HideInInspector]
     public NetworkDictionary<PlayerRef, PlayerData> PlayerData { get; }
 
@@ -31,11 +31,12 @@ public class GamePlay : NetworkBehaviour
             // 서버 초기화 작업 (예: 플레이어 스폰)
             // 예를 들어, 플레이어 레퍼런스를 얻어와 스폰하는 코드를 여기에 작성할 수 있습니다.
             // 여기서는 예시로 LocalPlayer를 스폰합니다.
-            SpawnPlayer(Runner.LocalPlayer);
+            //SpawnPlayer(Runner.LocalPlayer); onJoined 에서 해야겟다
+            // 아닌가 여기서 해도될거같은
         }
     }
 
-    private void SpawnPlayer(PlayerRef playerRef)
+    public void SpawnPlayer(PlayerRef playerRef)
     {
         if (PlayerData.TryGet(playerRef, out var playerData) == false)
         {

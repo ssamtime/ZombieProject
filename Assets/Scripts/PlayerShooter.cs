@@ -50,7 +50,7 @@ public class PlayerShooter : MonoBehaviour {
 
     // 탄약 UI 갱신
     private void UpdateUI() {
-        if (gun != null && GameObject.FindWithTag("MainUI").GetComponent<UIManager>() != null)
+        if (gun != null && GameObject.FindWithTag("MainUI") != null)
         {
             // UI 매니저의 탄약 텍스트에 탄창의 탄약과 남은 전체 탄약을 표시
             GameObject.FindWithTag("MainUI").GetComponent<UIManager>().UpdateAmmoText(gun.magAmmo, gun.ammoRemain);
